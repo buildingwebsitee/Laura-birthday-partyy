@@ -1,0 +1,32 @@
+# One-click setup for Render (render.com): New > Blueprint > pick this repository.
+#
+# This uses Render's free plan: no card needed to deploy. Two trade-offs come with free:
+#  - it falls asleep after 15 quiet minutes, and wakes up slowly (10-30s) on the next visit
+#  - it has no disk, so guests, bills and photos are forgotten whenever it falls asleep
+#    (phones sign themselves back in automatically, but bills and photos are gone)
+# To keep it always on and remembering everything, change plan: free to plan: starter below,
+# add a disk (see the commented-out block), and set DATA_DIR to /var/data. That costs money,
+# billed by the second - check render.com/pricing before switching.
+services:
+  - type: web
+    name: laura-party
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: BIRTHDAY_NAME
+        value: Laura
+      - key: VIP_KEY         # Laura's secret link:  https://YOUR-SITE/?vip=THIS
+        sync: false          # Render asks you for it. Use letters and numbers only.
+      - key: ADMIN_KEY       # the bills page:       https://YOUR-SITE/admin?key=THIS
+        sync: false
+    # To switch to the always-on paid plan later, uncomment these four lines,
+    # change "plan: free" above to "plan: starter", and add the DATA_DIR env var above:
+    #   - key: DATA_DIR
+    #     value: /var/data
+    # disk:
+    #   name: party-data
+    #   mountPath: /var/data
+    #   sizeGB: 1
